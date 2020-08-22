@@ -15,11 +15,19 @@
 </template>
 
 <script>
+import $ from "jquery";
+import { of } from 'rxjs';
+
+import { from } from 'rxjs';
+import { interval } from 'rxjs';
+
+import { debounceTime } from 'rxjs/operators';
+import { map, concatMap, delay } from 'rxjs/operators';
 
   export default {
    data: function(){
         return {
-            sequance: [0,0,0,0,0,0,0,0],
+            sequance: [0,1],
             opac0:false,
             opac1:false,
             opac2:false,
@@ -31,28 +39,39 @@
        start: function(){
           let a = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
           this.sequance.push(0);
+         
        }
     },
     watch: {
             sequance: function (newNumber) {
-               newNumber.forEach((item, index, array)=> {
-                       switch (item) {
-                            case 0:
-                              this.opac0=true;
-                         this.opac0=false;
-                              break;
-                            case 1:
-                              alert( 'В точку!' );
-                              break;
-                            case 2:
-                              alert( 'Перебор' );
-                              break;
-                            case 3:
-                              alert( 'Перебор' );
-                              break;
-                         
-                        }
-               });
+              from(this.sequance).pipe(concatMap(item => of(item).pipe(delay(1000))))
+              .subscribe(function (next){
+                   switch (next) {
+                       case 0:
+                         $(".upleft").fadeTo("normal",1,function(){
+                           $(".upleft").fadeTo("normal",0.5);
+                         });
+                       break;
+                       case 1:
+                       $(".upright").fadeTo("normal",1,function(){
+                           $(".upright").fadeTo("normal",0.5);
+                         });
+                       break;
+                       case 2:
+                       $(".downleft").fadeTo("normal",1,function(){
+                           $(".downleft").fadeTo("normal",0.5);
+                         });
+                       break;
+                       case 3:
+                       $(".downright").fadeTo("normal",1,function(){
+                           $(".downright").fadeTo("normal",0.5);
+                         });
+                       break;
+ 
+                     }
+              }
+                    
+                );
                  
             }
         },
@@ -96,17 +115,4 @@ div.qwe{
 }
 
 
-@keyframes anime {
-
-    100% {
-        opacity: 1;
-    }
-}
-
-
-.opac {
-  animation-name: anime;
-  animation-duration: 2s;
-  animation-iteration-count: 1;
-}
 </style>
