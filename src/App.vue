@@ -3,14 +3,13 @@
 <template>
 <div>
     <div class="qwe">
-      <div class="upleft block" v-bind:class="{opac: opac0}"></div><div class="upright block" v-bind:class="{opac: opac1}"></div>
+      <div class="upleft block"  v-on:click="leftop"></div><div class="upright block"  v-on:click="rigtop"></div>
        <b-button class="qq" v-on:click="start" variant="danger">START</b-button>
       </div>
       <div class="qwe">
-        <div class="downleft block" v-bind:class="{opac: opac2}"></div><div class="downright block" v-bind:class="{opac: opac3}"></div>
-       
+        <div class="downleft block"  v-on:click="lefdown"></div><div class="downright block"  v-on:click="rigdown"></div>
       </div>
-     
+       <p v-if="err">Первый параграф</p>     
 </div>
 </template>
 
@@ -27,20 +26,52 @@ import { map, concatMap, delay } from 'rxjs/operators';
   export default {
    data: function(){
         return {
-            sequance: [0,1],
-            opac0:false,
-            opac1:false,
-            opac2:false,
-            opac3:false,
+            sequance: [0,1,3,2,2,1,0,3,2,3],
+            mysequance:[],
+            err:false,
         }
         
     },
     methods:{
        start: function(){
+         this.err=false;
           let a = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
           this.sequance.push(0);
          
-       }
+       },
+       compare:function(){
+          for (let i = 0; i < this.mysequance.length; i++) { // выведет 0, затем 1, затем 2
+           console.log("ffff");
+              if(this.mysequance[i]!=this.sequance[i]){
+                this.err=true;
+                break;
+              }
+              if(i==this.sequance.length-1){
+                
+              }
+          }
+       },
+
+       leftop: function(){
+          this.mysequance.push(0);
+          console.log(this.mysequance)
+          this.compare();
+       },
+       rigtop: function(){
+          this.mysequance.push(1);
+          console.log(this.mysequance)
+          this.compare();
+       },
+       lefdown: function(){
+          this.mysequance.push(2);
+          console.log(this.mysequance)
+          this.compare();
+       },
+       rigdown: function(){
+          this.mysequance.push(3);
+          console.log(this.mysequance)
+          this.compare();
+       },
     },
     watch: {
             sequance: function (newNumber) {
