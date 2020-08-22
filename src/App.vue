@@ -1,76 +1,62 @@
 
 
 <template>
-<div id="hello">
-  <div id="title">
-  <h2 class="qq">React.js Calorie Counter</h2>
-  </div>
-  <div>
-  <div class="under">
-  <b-table-simple hover small striped responsive bordered>
-    <b-thead >
-      <b-tr>
-        <b-th>#</b-th>
-        <b-th>DESCRIPTION</b-th>
-        <b-th>CALORIES</b-th>
-        <b-th>FAT</b-th>
-        <b-th>CARBS</b-th>
-        <b-th>PROTEIN</b-th>
-        <b-th></b-th>
-      </b-tr>
-    </b-thead>
-   <allRows></allRows>
- <allSums></allSums>
-<addRows></addRows>
-  </b-table-simple>
-  </div>
+<div>
+    <div class="qwe">
+      <div class="upleft block"></div><div class="upright block"></div>
+       <b-button class="qq" variant="danger">START</b-button>
+      </div>
+      <div class="qwe">
+        <div class="downleft block"></div><div class="downright block"></div>
+       
+      </div>
+     
 </div>
-
-</div>
-
 </template>
 
 <script>
-import allRows from './allRows.vue'
-import allSums from './allSums.vue'
-import addRows from './addRows.vue'
+
   export default {
-    data() {
-      return {
-        items: [
-          { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-          { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-          { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-          { age: 38, first_name: 'Jami', last_name: 'Carney' }
-        ]
-      }
+   data: function(){
+        return {
+            header: 'Counter Program'
+        }
     },
-    components:{
-      allRows,allSums, addRows
-    }
   }
 </script>
 
 <style>
-#hello {
-  width: 1300px;
-  margin:0 auto;
-  background-color: #FAEBD7;
-  border-radius: 15px;
-  padding-bottom: 15px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin-top: 15px;
+div.upleft{
+  background: black; /* Цвет фона */
+  border-top-left-radius: 300px;
+  margin-left: 10px;
 }
-#title{
-text-align: center;
-overflow: hidden;
+div.upright{
+  background: blue; /* Цвет фона */
+   border-top-right-radius: 300px;
 }
+div.downleft{
+  background: red; /* Цвет фона */
+  border-bottom-left-radius: 300px;
+  margin-left: 10px;
+}
+div.downright{
+   border-bottom-right-radius: 300px;
+   background: #007E3E; /* Цвет фона */
+}
+
+div.block{
+  color: #fff; /* Цвет текста */
+  width: 300px;
+  height: 300px;
+  vertical-align: top
+}
+div.qwe{
+  display: flex;
+}
+
 .qq{
-  margin-top:40px;
-  margin-bottom:40px;
-}
-.under{
-  background-color: white;
+  align-self: center;
+  
 }
 </style>
