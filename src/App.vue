@@ -2,6 +2,7 @@
 
 <template>
 <div class="ff">
+ 
  <div>
     <div class="qwe">
       <div class="upleft block"  v-on:click="leftop"></div><div class="upright block"  v-on:click="rigtop"></div>  
@@ -22,7 +23,7 @@
 <script>
 import $ from "jquery";
 import { of } from 'rxjs';
-
+import { take } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { interval } from 'rxjs';
 
@@ -32,7 +33,7 @@ import { map, concatMap, delay } from 'rxjs/operators';
   export default {
    data: function(){
         return {
-            sequance: [1,2],
+            sequance: [],
             mysequance:[],
             err:false,
             ready:false,
@@ -42,6 +43,7 @@ import { map, concatMap, delay } from 'rxjs/operators';
     },
     methods:{
        start: function(){
+         this.sequance=[],
           this.err=false;
           this.ready=false;
           this.add();
@@ -52,12 +54,24 @@ import { map, concatMap, delay } from 'rxjs/operators';
           for (let i = 0; i < this.mysequance.length; i++) { // выведет 0, затем 1, затем 2
               if(this.mysequance[i]!=this.sequance[i]){
                 this.err=true;
+                this.ready=false;
                 break;
               }
               if(i==this.sequance.length-1){
-                 this.n++;
-                 this.ready=false;
-                 this.add();
+                const numbers = interval(700);
+                const takeFourNumbers = numbers.pipe(take(2));
+                takeFourNumbers.subscribe((x)=>{ 
+                   console.log('Next: ', x)
+                   if(x==1){
+                     var audio = new Audio('dist/win.mp3');
+                     audio.play();
+                     console.log(x);
+                     this.n++;
+                     this.ready=false;
+                     this.add();
+                   }
+                });
+               
               }
           }
        },
@@ -72,6 +86,8 @@ import { map, concatMap, delay } from 'rxjs/operators';
 
        leftop: function(){
          if(this.ready==true){
+            var audio = new Audio('dist/sound1.mp3');
+            audio.play();
           this.mysequance.push(0);
           console.log(this.mysequance)
           this.compare();
@@ -79,6 +95,8 @@ import { map, concatMap, delay } from 'rxjs/operators';
        },
        rigtop: function(){
          if(this.ready==true){
+           var audio = new Audio('dist/sound2.mp3');
+            audio.play();
           this.mysequance.push(1);
           console.log(this.mysequance)
           this.compare();
@@ -86,6 +104,8 @@ import { map, concatMap, delay } from 'rxjs/operators';
        },
        lefdown: function(){
          if(this.ready==true){
+           var audio = new Audio('dist/sound3.mp3');
+            audio.play();
           this.mysequance.push(2);
           console.log(this.mysequance)
           this.compare();
@@ -93,6 +113,8 @@ import { map, concatMap, delay } from 'rxjs/operators';
        },
        rigdown: function(){
          if(this.ready==true){
+           var audio = new Audio('dist/sound4.mp3');
+            audio.play();
           this.mysequance.push(3);
           console.log(this.mysequance)
           this.compare();
@@ -105,21 +127,29 @@ import { map, concatMap, delay } from 'rxjs/operators';
               .subscribe( (next)=>{
                    switch (next) {
                        case 0:
+                          var audio = new Audio('dist/sound1.mp3');
+                          audio.play();
                          $(".upleft").fadeTo("normal",1,function(){
                            $(".upleft").fadeTo("normal",0.5);
                          });
                        break;
                        case 1:
+                         var audio = new Audio('dist/sound2.mp3');
+                         audio.play();
                        $(".upright").fadeTo("normal",1,function(){
                            $(".upright").fadeTo("normal",0.5);
                          });
                        break;
                        case 2:
+                         var audio = new Audio('dist/sound3.mp3');
+                          audio.play();
                        $(".downleft").fadeTo("normal",1,function(){
                            $(".downleft").fadeTo("normal",0.5);
                          });
                        break;
                        case 3:
+                         var audio = new Audio('dist/sound4.mp3');
+                          audio.play();
                        $(".downright").fadeTo("normal",1,function(){
                            $(".downright").fadeTo("normal",0.5);
                          });
@@ -138,6 +168,10 @@ import { map, concatMap, delay } from 'rxjs/operators';
 </script>
 
 <style>
+body{
+ background: -webkit-linear-gradient(45deg, #EECFBA, #C5DDE8);
+}
+
 div.upleft{
   background: black; /* Цвет фона */
   border-top-left-radius: 300px;
