@@ -217,6 +217,8 @@ div.qwe{
   flex-wrap: wrap-reverse;
   justify-content: space-around;
   align-items: center;
+  margin-top: 50px;
+          overflow: hidden;
 }
 
 p{
