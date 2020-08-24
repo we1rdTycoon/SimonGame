@@ -15,7 +15,10 @@
   <div>
     <p>Round {{n}}</p> 
     <b-button class="qq" v-on:click="start" variant="danger">START</b-button>
-     <p class="error" v-if="err">ПРОВАЛ</p>  
+     <p class="error" v-if="err">ПРОВАЛ</p> <br><br>
+        <b-form-radio class="edd" v-model="mode" name="some-radios" value="SimpleGame">SIMPLE GAME</b-form-radio>
+        <b-form-radio class="edd" v-model="mode" name="some-radios" value="SoundOnly">SOUND ONLY</b-form-radio>
+      
   </div>
 </div>
 </template>
@@ -23,10 +26,11 @@
 <script>
 import $ from "jquery";
 import { of } from 'rxjs';
+import { skip } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { interval } from 'rxjs';
-
+import { ignoreElements } from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
 import { map, concatMap, delay } from 'rxjs/operators';
 
@@ -38,16 +42,19 @@ import { map, concatMap, delay } from 'rxjs/operators';
             err:false,
             ready:false,
             n:1,
+            mode:'SimpleGame',
+            stop: false,
         }
         
     },
     methods:{
        start: function(){
-         this.sequance=[],
+          this.sequance=[],
           this.err=false;
           this.ready=false;
           this.add();
           this.n=1;
+          this.stop=false
          
        },
        compare:function(){
@@ -84,19 +91,28 @@ import { map, concatMap, delay } from 'rxjs/operators';
 
        },
 
-       leftop: function(){
+       leftop: function(el){
          if(this.ready==true){
             var audio = new Audio('dist/sound1.mp3');
+             $(".upleft").fadeTo("fast",1,function(){
+                 $(".upleft").fadeTo("fast",0.5);
+                 
+             });
             audio.play();
-          this.mysequance.push(0);
-          console.log(this.mysequance)
-          this.compare();
+            this.mysequance.push(0);
+            console.log(el)
+            this.compare();
          }
        },
        rigtop: function(){
          if(this.ready==true){
            var audio = new Audio('dist/sound2.mp3');
-            audio.play();
+           $(".upright").fadeTo("fast",1,function(){
+                 $(".upright").fadeTo("fast",0.5);
+                 
+             });
+             
+          audio.play();
           this.mysequance.push(1);
           console.log(this.mysequance)
           this.compare();
@@ -105,6 +121,9 @@ import { map, concatMap, delay } from 'rxjs/operators';
        lefdown: function(){
          if(this.ready==true){
            var audio = new Audio('dist/sound3.mp3');
+           $(".downleft").fadeTo("fast",1,function(){
+                 $(".downleft").fadeTo("fast",0.5);
+               });
             audio.play();
           this.mysequance.push(2);
           console.log(this.mysequance)
@@ -114,6 +133,9 @@ import { map, concatMap, delay } from 'rxjs/operators';
        rigdown: function(){
          if(this.ready==true){
            var audio = new Audio('dist/sound4.mp3');
+            $(".downright").fadeTo("fast",1,function(){
+                 $(".downright").fadeTo("fast",0.5);
+               });
             audio.play();
           this.mysequance.push(3);
           console.log(this.mysequance)
@@ -123,36 +145,52 @@ import { map, concatMap, delay } from 'rxjs/operators';
     },
     watch: {
             sequance: function (newNumber) {
-              from(this.sequance).pipe(concatMap(item => of(item).pipe(delay(1000))))
+              from(this.sequance).pipe(concatMap((item) =>{if(this.stop==false) { return of(item).pipe(delay(1000))} else { return of(item).pipe(ignoreElements())} }))
               .subscribe( (next)=>{
                    switch (next) {
                        case 0:
-                          var audio = new Audio('dist/sound1.mp3');
+                         if(this.stop==false){
+                         var audio = new Audio('dist/sound1.mp3');
                           audio.play();
-                         $(".upleft").fadeTo("normal",1,function(){
+                         }
+                         if(this.mode=="SimpleGame"){
+                          $(".upleft").fadeTo("normal",1,function(){
                            $(".upleft").fadeTo("normal",0.5);
                          });
+                         }
                        break;
                        case 1:
+                         if(this.stop==false){
                          var audio = new Audio('dist/sound2.mp3');
                          audio.play();
-                       $(".upright").fadeTo("normal",1,function(){
+                         }
+                         if(this.mode=="SimpleGame"){
+                         $(".upright").fadeTo("normal",1,function(){
                            $(".upright").fadeTo("normal",0.5);
                          });
+                         }
                        break;
                        case 2:
+                         if(this.stop==false){
                          var audio = new Audio('dist/sound3.mp3');
                           audio.play();
-                       $(".downleft").fadeTo("normal",1,function(){
-                           $(".downleft").fadeTo("normal",0.5);
+                         }
+                         if(this.mode=="SimpleGame"){
+                           $(".downleft").fadeTo("normal",1,function(){
+                             $(".downleft").fadeTo("normal",0.5);
                          });
+                         }
                        break;
                        case 3:
+                         if(this.stop==false){
                          var audio = new Audio('dist/sound4.mp3');
-                          audio.play();
-                       $(".downright").fadeTo("normal",1,function(){
+                         audio.play();
+                         }
+                         if(this.mode=="SimpleGame"){
+                         $(".downright").fadeTo("normal",1,function(){
                            $(".downright").fadeTo("normal",0.5);
                          });
+                         }
                        break;
  
                      }
@@ -162,6 +200,14 @@ import { map, concatMap, delay } from 'rxjs/operators';
                     
                 );
                  
+            },
+            mode:function(dsad){
+               this.mysequance=[];
+               this.sequance=[];
+               this.err=false;
+               this.ready=false;
+               this.n=1;
+               this.stop=true;
             }
         },
   }
@@ -217,8 +263,8 @@ div.qwe{
   flex-wrap: wrap-reverse;
   justify-content: space-around;
   align-items: center;
-  margin-top: 50px;
-          overflow: hidden;
+  margin-top: 20px;
+  overflow: hidden;
 }
 
 p{
@@ -228,5 +274,8 @@ p.error{
   color: red;
 }
 
-
+.edd{
+  font-family: 'McLaren';
+  font-size: 20px;
+}
 </style>
