@@ -40,26 +40,20 @@ import { map, concatMap, delay } from 'rxjs/operators';
             n:1,
             mode:'SimpleGame',
             stop: false,
+            a:null,
         }
         
     },
     methods:{
        start: function(){
          this.stop=true;
-         interval(700).pipe(take(1)).subscribe((x)=>{
-              if(x==0){
-                 this.sequance=[];
-                 this.err=false;
-                 this.ready=false;
-                 this.n=1;
-                 this.stop=false
-                this.add();
-              }
-
-         });
-         
-          
-         
+         this.a? this.a.unsubscribe():null;
+         this.sequance=[];
+          this.err=false;
+          this.ready=false;
+          this.n=1;
+          this.stop=false
+          this.add();    
        },
        compare:function(){
           for (let i = 0; i < this.mysequance.length; i++) {
@@ -69,7 +63,9 @@ import { map, concatMap, delay } from 'rxjs/operators';
                 break;
               }
               if(i==this.sequance.length-1){
-                 interval(700).pipe(take(1)).subscribe((x)=>{ 
+                this.a? this.a.unsubscribe():null;
+                this.ready=false;
+                 interval(500).pipe(take(1)).subscribe((x)=>{ 
                    console.log('Next: ', x)
                    if(x==0){
                      if(this.stop==false){
@@ -140,17 +136,11 @@ import { map, concatMap, delay } from 'rxjs/operators';
     },
     watch: {
             sequance: function (newNumber) {
-              if(this.sequance.length!==0){
-              from(this.sequance).pipe(concatMap((item) =>{
-                if(this.stop==false) {
-                   return of(item).pipe(delay(1000))
-                   }
-                    else 
-                    {
-                       return of(item).pipe(ignoreElements())
-                    }
-                 }))
-              .subscribe( (next)=>{
+              if(this.stop==false){
+              let ar = from(newNumber).pipe(concatMap((item) =>{
+                   return of(item).pipe(delay(1000))                 
+                 }));
+              this.a = ar.subscribe( (next)=>{
                    switch (next) {
                        case 0:
                          if(this.stop==false){
@@ -204,15 +194,16 @@ import { map, concatMap, delay } from 'rxjs/operators';
                     
                 );
               }
+              
             },
             mode:function(){
                this.mysequance=[];
                this.sequance=[];
                this.err=false;
-               this.ready=false;
                this.n=1;
                this.stop=true;
                this.ready=false;
+               this.a? this.a.unsubscribe():null;
             }
         },
   }
